@@ -1,0 +1,57 @@
+# Development environment
+.aider*
+.env
+.env.local
+*.venv
+venv/
+ENV/
+env/
+
+# Database
+db.sqlite3
+*.db
+*.sqlite3
+*.md
+# Media files (user uploads)
+media/
+media/**/*
+
+# Migrations (auto-generated)
+*/migrations/
+!*/migrations/__init__.py
+*/migrations/*.py
+
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Static files (collected)
+staticfiles/
+static/admin/
+static/rest_framework/
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Logs
+*.log
+
+# OS

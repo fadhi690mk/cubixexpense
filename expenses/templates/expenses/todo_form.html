@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}Create{% endif %} Todo - Cubixmet Expense{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="page-title">
+            {% if form.instance.pk %}
+                <i class="fas fa-edit"></i> Edit Task
+            {% else %}
+                <i class="fas fa-plus"></i> Create New Task
+            {% endif %}
+        </h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body p-4">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Title Field -->
+                    <div class="mb-4">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">
+                            <i class="bi bi-chat-left"></i> Title <span class="text-danger">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            class="form-control form-control-lg {% if form.title.errors %}is-invalid{% endif %}"
+                            id="{{ form.title.id_for_label }}"
+                            name="{{ form.title.name }}"
+                            placeholder="Enter task name..."
+                            value="{{ form.title.value|default:'' }}"
+                            required
+                        >
+                        {% if form.title.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.title.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-2">Give this planned expense a descriptive name</small>
+                    </div>
+
+                    <!-- Description Field -->
+                    <div class="mb-4">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">
+                            <i class="bi bi-file-text"></i> Description
+                        </label>
+                        <textarea
+                            class="form-control {% if form.description.errors %}is-invalid{% endif %}"
+                            id="{{ form.description.id_for_label }}"
+                            name="{{ form.description.name }}"
+                            rows="3"
+                            placeholder="Add details about this task..."
+                        >{{ form.description.value|default:'' }}</textarea>
+                        {% if form.description.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.description.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-2">Optional - Additional notes</small>
+                    </div>
+
+                    <!-- Category Field -->
+                    <div class="mb-4">
+                        <label for="{{ form.category.id_for_label }}" class="form-label">
+                            <i class="bi bi-tag"></i> Category
+                        </label>
+                        <select
+                            class="form-select form-select-lg {% if form.category.errors %}is-invalid{% endif %}"
+                            id="{{ form.category.id_for_label }}"
+                            name="{{ form.category.name }}"
+                        >
+                            <option value="">Select a Category (Optional)</option>
+                            {% for category in form.category.field.queryset %}
+                            <option value="{{ category.id }}" {% if form.category.value == category.id|stringformat:"s" %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% if form.category.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.category.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-2">Choose a category for better organization</small>
+                    </div>
+
+                    <!-- Estimated Amount Field -->
+                    <div class="mb-4">
+                        <label for="{{ form.estimated_amount.id_for_label }}" class="form-label">
+                            <i class="bi bi-currency-rupee"></i> Estimated Amount
+                        </label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text">₹</span>
+                            <input
+                                type="number"
+                                step="0.01"
+                                class="form-control {% if form.estimated_amount.errors %}is-invalid{% endif %}"
+                                id="{{ form.estimated_amount.id_for_label }}"
+                                name="{{ form.estimated_amount.name }}"
+                                placeholder="0.00"
+                                value="{{ form.estimated_amount.value|default:'' }}"
+                            >
+                        </div>
+                        {% if form.estimated_amount.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.estimated_amount.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-2"><span class="badge bg-secondary">Optional</span> Leave blank if you don't have an estimate</small>
+                    </div>
+
+                    <!-- Target Date Field -->
+                    <div class="mb-4">
+                        <label for="{{ form.target_date.id_for_label }}" class="form-label">
+                            <i class="bi bi-calendar"></i> Target Date <span class="text-danger">*</span>
+                        </label>
+                        <input
+                            type="date"
+                            class="form-control form-control-lg {% if form.target_date.errors %}is-invalid{% endif %}"
+                            id="{{ form.target_date.id_for_label }}"
+                            name="{{ form.target_date.name }}"
+                            value="{{ form.target_date.value }}"
+                            required
+                        >
+                        {% if form.target_date.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.target_date.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-2">When do you plan to complete this task?</small>
+                    </div>
+
+                    <!-- Status Field (Only on Edit) -->
+                    {% if form.instance.pk %}
+                    <div class="mb-4">
+                        <label for="{{ form.status.id_for_label }}" class="form-label">
+                            <i class="bi bi-check-circle"></i> Status <span class="text-danger">*</span>
+                        </label>
+                        <select
+                            class="form-select form-select-lg {% if form.status.errors %}is-invalid{% endif %}"
+                            id="{{ form.status.id_for_label }}"
+                            name="{{ form.status.name }}"
+                            required
+                        >
+                            <option value="">Select Status</option>
+                            {% for value, label in form.status.field.choices %}
+                                {% if value %}
+                                <option value="{{ value }}" {% if form.status.value == value %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        {% if form.status.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.status.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-2">Update the current status of this task</small>
+                    </div>
+                    {% endif %}
+
+                    <!-- Buttons -->
+                    <div class="d-grid gap-2 d-md-flex mt-5 pt-3 border-top">
+                        <button type="submit" class="btn btn-primary btn-lg" id="submit-btn" data-submit-text="{% if form.instance.pk %}Update Task{% else %}Create Task{% endif %}">
+                            <i class="fas fa-{% if form.instance.pk %}save{% else %}plus{% endif %}"></i>
+                            {% if form.instance.pk %}Update Task{% else %}Create Task{% endif %}
+                        </button>
+                        <a href="{% url 'todo-list' %}" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Sidebar -->
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-lightbulb"></i> About Planned Expenses
+                </h5>
+                <p class="small text-muted">A planned expense (Todo) helps you forecast upcoming spending before you actually make the purchase.</p>
+                
+                <h6 class="mt-3 mb-2">Status Meanings:</h6>
+                <ul class="small list-unstyled">
+                    <li><span class="badge bg-primary">PENDING</span> - Waiting to be purchased</li>
+                    <li><span class="badge bg-success">COMPLETED</span> - Converted to actual expense</li>
+                    <li><span class="badge bg-secondary">CANCELLED</span> - Won't be purchased</li>
+                </ul>
+
+                <hr>
+
+                <h6 class="mb-2">Tips:</h6>
+                <ul class="small">
+                    <li>Fill in estimated amount for budget forecasting</li>
+                    <li>Select a category to organize expenses</li>
+                    <li>Set target date for when you plan to buy</li>
+                    <li>Convert to actual expense when purchased</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control-lg,
+    .form-select-lg {
+        font-size: 1rem;
+        padding: 0.75rem 1rem;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #021838;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+    
+    .input-group-text {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        font-weight: 500;
+    }
+    
+    input[type="date"] {
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    // Bootstrap form validation
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+    
+    // Initialize date input with today's date as default for new todos
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInput = document.querySelector('input[type="date"][name="target_date"]');
+        if (dateInput && !dateInput.value) {
+            // Set default to today
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+        }
+    });
+</script>
+{% endblock %}

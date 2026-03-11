@@ -1,0 +1,186 @@
+[
+    {
+      "model": "expenses.expensecategory",
+      "pk": 1,
+      "fields": {
+        "name": "Civil & Interior Work",
+        "description": "Tiling, painting, partitions, boards, and interior setup",
+        "created_at": "2026-03-08T00:00:00Z",
+        "updated_at": "2026-03-08T00:00:00Z"
+      }
+    },
+    {
+      "model": "expenses.expensecategory",
+      "pk": 2,
+      "fields": {
+        "name": "Cleaning materials",
+        "description": "",
+        "created_at": "2026-03-08T00:00:00Z",
+        "updated_at": "2026-03-08T00:00:00Z"
+      }
+    },
+    {
+      "model": "expenses.expensecategory",
+      "pk": 3,
+      "fields": {
+        "name": "Company Registration",
+        "description": "",
+        "created_at": "2026-03-08T00:00:00Z",
+        "updated_at": "2026-03-08T00:00:00Z"
+      }
+    },
+    {
+      "model": "expenses.expensecategory",
+      "pk": 4,
+      "fields": {
+        "name": "Location & Agreements",
+        "description": "Office location, rent advance, agreements, and permissions",
+        "created_at": "2026-03-08T00:00:00Z",
+        "updated_at": "2026-03-08T00:00:00Z"
+      }
+    },
+  
+    {
+      "model": "expenses.expense",
+      "pk": 1,
+      "fields": {
+        "category": 3,
+        "amount": "1307.78",
+        "date": "2026-03-01",
+        "description": "Gmail purchase hello@cubixmet.com",
+        "paid_by": 1,
+        "created_at": "2026-03-08T00:00:00Z",
+        "updated_at": "2026-03-08T00:00:00Z"
+      }
+    },
+    {
+      "model": "expenses.expense",
+      "pk": 2,
+      "fields": {
+        "category": 3,
+        "amount": "3362.22",
+        "date": "2026-02-27",
+        "description": "domain name",
+        "paid_by": 1,
+        "created_at": "2026-03-08T00:00:00Z",
+        "updated_at": "2026-03-08T00:00:00Z"
+      }
+    },
+    {
+      "model": "expenses.expense",
+      "pk": 3,
+      "fields": {
+        "category": 3,
+        "amount": "350.00",
+        "date": "2026-02-27",
+        "description": "SIM card new",
+        "paid_by": 1,
+        "created_at": "2026-03-08T00:00:00Z",
+        "updated_at": "2026-03-08T00:00:00Z"
+      }
+    },
+    {
+      "model": "expenses.expense",
+      "pk": 4,
+      "fields": {
+        "category": 1,
+        "amount": "26250.00",
+        "date": "2026-02-25",
+        "description": "tile full work completed | balance",
+        "paid_by": 1,
+        "created_at": "2026-03-08T00:00:00Z",
+        "updated_at": "2026-03-08T00:00:00Z"
+      }
+    },
+    {
+      "model": "expenses.expense",
+      "pk": 5,
+      "fields": {
+        "category": 2,
+        "amount": "250.00",
+        "date": "2026-02-25",
+        "description": "MOP+surf",
+        "paid_by": 1,
+        "created_at": "2026-03-08T00:00:00Z",
+        "updated_at": "2026-03-08T00:00:00Z"
+      }
+    },
+    {
+      "model": "expenses.expense",
+      "pk": 6,
+      "fields": {
+        "category": 1,
+        "amount": "10000.00",
+        "date": "2026-02-25",
+        "description": "old glass from cheriyaka anjillan",
+        "paid_by": 1,
+        "created_at": "2026-03-08T00:00:00Z",
+        "updated_at": "2026-03-08T00:00:00Z"
+      }
+    },
+    {
+      "model": "expenses.expense",
+      "pk": 7,
+      "fields": {
+        "category": 1,
+        "amount": "1000.00",
+        "date": "2026-02-24",
+        "description": "cleaning",
+        "paid_by": 1,
+        "created_at": "2026-03-08T00:00:00Z",
+        "updated_at": "2026-03-08T00:00:00Z"
+      }
+    },
+    {
+      "model": "expenses.expense",
+      "pk": 8,
+      "fields": {
+        "category": 1,
+        "amount": "160.00",
+        "date": "2026-02-24",
+        "description": "broom and winnowing basket",
+        "paid_by": 1,
+        "created_at": "2026-03-08T00:00:00Z",
+        "updated_at": "2026-03-08T00:00:00Z"
+      }
+    },
+    {
+      "model": "expenses.expense",
+      "pk": 9,
+      "fields": {
+        "category": 3,
+        "amount": "5000.00",
+        "date": "2026-02-24",
+        "description": "LLP registration,Advance payment",
+        "paid_by": 1,
+        "created_at": "2026-03-08T00:00:00Z",
+        "updated_at": "2026-03-08T00:00:00Z"
+      }
+    },
+    {
+      "model": "expenses.expense",
+      "pk": 10,
+      "fields": {
+        "category": 4,
+        "amount": "75000.00",
+        "date": "2026-02-05",
+        "description": "3 months advance",
+        "paid_by": 2,
+        "created_at": "2026-03-08T00:00:00Z",
+        "updated_at": "2026-03-08T00:00:00Z"
+      }
+    },
+    {
+      "model": "expenses.expense",
+      "pk": 11,
+      "fields": {
+        "category": 1,
+        "amount": "25000.00",
+        "date": "2026-02-05",
+        "description": "Tile advance",
+        "paid_by": 1,
+        "created_at": "2026-03-08T00:00:00Z",
+        "updated_at": "2026-03-08T00:00:00Z"
+      }
+    }
+  ]

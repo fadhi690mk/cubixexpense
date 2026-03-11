@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+
+{% block title %}Reports - Cubixmet Expense{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="page-title">
+            <i class="bi bi-bar-chart"></i> Financial Reports
+        </h1>
+        <p class="text-muted">Generate and export financial reports</p>
+    </div>
+</div>
+
+<!-- Report Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label for="date_from" class="form-label">From Date</label>
+                <input type="date" class="form-control" name="date_from" id="date_from" value="{{ request.GET.date_from }}">
+            </div>
+            <div class="col-md-3">
+                <label for="date_to" class="form-label">To Date</label>
+                <input type="date" class="form-control" name="date_to" id="date_to" value="{{ request.GET.date_to }}">
+            </div>
+            <div class="col-md-3">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" name="category" id="category">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <div class="w-100">
+                    <button type="submit" class="btn btn-primary w-100" id="submit-btn" data-submit-text="Generate Report">
+                        <i class="bi bi-search"></i> Generate Report
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Overall Summary -->
+<div class="row g-4 mb-5">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-light border-bottom">
+                <h5 class="mb-0"><i class="bi bi-speedometer2" style="color: #021838;"></i> Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6 mb-3">
+                        <p class="text-muted mb-2">Total Income</p>
+                        <div style="font-size: 1.8rem; color: #28a745; font-weight: 700;">
+                            {{ total_funds|floatformat:2 }}
+                        </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <p class="text-muted mb-2">Total Expenses</p>
+                        <div style="font-size: 1.8rem; color: #dc3545; font-weight: 700;">
+                            {{ total_expenses|floatformat:2 }}
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="text-center">
+                    <p class="text-muted mb-2">Net Balance</p>
+                    <div style="font-size: 1.8rem; color: {% if net_balance >= 0 %}#021838{% else %}#dc3545{% endif %}; font-weight: 700;">
+                        {{ net_balance|floatformat:2 }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-light border-bottom">
+                <h5 class="mb-0"><i class="bi bi-download" style="color: #021838;"></i> Export</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small mb-3">Download report in your preferred format</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'report-export' %}?format=csv{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" class="btn btn-primary">
+                        <i class="bi bi-file-earmark-spreadsheet"></i> Export as CSV
+                    </a>
+                    <a href="{% url 'report-export' %}?format=excel{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" class="btn btn-primary">
+                        <i class="bi bi-file-earmark-excel"></i> Export as Excel
+                    </a>
+                    <a href="#" class="btn btn-outline-primary" onclick="window.print(); return false;">
+                        <i class="bi bi-printer"></i> Print Report
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Monthly Summary -->
+<div class="row g-4 mb-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-light border-bottom">
+                <h5 class="mb-0"><i class="bi bi-calendar-month" style="color: #021838;"></i> Monthly Breakdown</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Income</th>
+                            <th>Expenses</th>
+                            <th>Balance</th>
+                            <th>% Spent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for month_stat in monthly_stats %}
+                        <tr>
+                            <td><strong>{{ month_stat.month|date:"F Y" }}</strong></td>
+                            <td class="amount-cell">{{ month_stat.income|floatformat:2 }}</td>
+                            <td class="amount-cell">{{ month_stat.expenses|floatformat:2 }}</td>
+                            <td style="color: {% if month_stat.balance >= 0 %}#021838{% else %}#dc3545{% endif %}; font-weight: 600;">
+                                {{ month_stat.balance|floatformat:2 }}
+                            </td>
+                            <td>
+                                {% if month_stat.income > 0 %}
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar {% if month_stat.percent_spent > 80 %}bg-danger{% elif month_stat.percent_spent > 50 %}bg-warning{% else %}bg-success{% endif %}"
+                                         role="progressbar"
+                                         style="width: {{ month_stat.percent_spent }}%"
+                                         aria-valuenow="{{ month_stat.percent_spent }}"
+                                         aria-valuemin="0"
+                                         aria-valuemax="100">
+                                        {{ month_stat.percent_spent|floatformat:1 }}%
+                                    </div>
+                                </div>
+                                {% else %}
+                                <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-3">No data available for the selected period</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Category-wise Breakdown -->
+<div class="row g-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-light border-bottom">
+                <h5 class="mb-0"><i class="bi bi-pie-chart" style="color: #021838;"></i> Expenses by Category</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Total Amount</th>
+                            <th>Transaction Count</th>
+                            <th>Average per Transaction</th>
+                            <th>% of Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category_stat in category_stats %}
+                        <tr>
+                            <td>
+                                <strong>{{ category_stat.category_name }}</strong>
+                            </td>
+                            <td class="amount-cell">{{ category_stat.total|floatformat:2 }}</td>
+                            <td>
+                                <span class="badge badge-primary">{{ category_stat.count }}</span>
+                            </td>
+                            <td>{{ category_stat.average|floatformat:2 }}</td>
+                            <td>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-info"
+                                         role="progressbar"
+                                         style="width: {{ category_stat.percent }}%"
+                                         aria-valuenow="{{ category_stat.percent }}"
+                                         aria-valuemin="0"
+                                         aria-valuemax="100">
+                                        {{ category_stat.percent|floatformat:1 }}%
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-3">No expense data available</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Print Styles -->
+<style media="print">
+    .btn, .card-header { display: none; }
+    body { background: white; }
+</style>
+{% endblock %}

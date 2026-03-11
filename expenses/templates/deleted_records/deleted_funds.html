@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Deleted Funds - Cubixmet Expense{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-5">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-0">
+                        <i class="bi bi-wallet2"></i> Deleted Funds
+                    </h2>
+                    <p class="text-muted small mt-2">Soft-deleted funds that can be restored</p>
+                </div>
+                <a href="{% url 'deleted-records' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="widget-label">Total Deleted Funds</div>
+                    <div class="widget-value text-danger">{{ funds_count }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="widget-label">Total Amount</div>
+                    <div class="widget-value text-danger">{{ total_amount|floatformat:2 }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deleted Funds Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Partner</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Added By</th>
+                                <th>Deleted</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if funds %}
+                                {% for fund in funds %}
+                                    <tr class="align-middle">
+                                        <td>
+                                            <code>#{{ fund.id }}</code>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-danger">{{ fund.get_partner_display }}</span>
+                                        </td>
+                                        <td class="amount-cell">
+                                            <strong class="text-danger">{{ fund.amount|floatformat:2 }}</strong>
+                                        </td>
+                                        <td>{{ fund.date|date:"d M Y" }}</td>
+                                        <td>
+                                            {% if fund.description %}
+                                                <small>{{ fund.description|truncatewords:10 }}</small>
+                                            {% else %}
+                                                <span class="text-muted"><small>—</small></span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ fund.added_by.get_full_name|default:fund.added_by.username }}</td>
+                                        <td>
+                                            <small class="text-muted">{{ fund.updated_at|date:"d M Y H:i" }}</small>
+                                        </td>
+                                        <td>
+                                            <form method="post" action="{% url 'restore-record' %}" class="d-inline">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="model_name" value="Fund">
+                                                <input type="hidden" name="object_id" value="{{ fund.id }}">
+                                                <button type="submit" class="btn btn-sm btn-success" title="Restore" data-submit-text="Restore">
+                                                    <i class="bi bi-arrow-counterclockwise"></i> Restore
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted py-5">
+                                        <i class="bi bi-inbox" style="font-size: 2rem; opacity: 0.5;"></i>
+                                        <p class="mt-3">No deleted funds found</p>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if is_paginated %}
+                    <nav class="border-top" aria-label="Page navigation">
+                        <ul class="pagination justify-content-center m-0" style="padding: 1rem;">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1">First</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                </li>
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ num }}</span>
+                                    </li>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table-hover tbody tr:hover {
+        background-color: rgba(220, 53, 69, 0.05);
+    }
+
+    .amount-cell {
+        text-align: right;
+    }
+</style>
+{% endblock %}

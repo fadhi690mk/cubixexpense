@@ -1,0 +1,446 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Cubixmet Expense{% endblock %}</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#021838">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Cubixmet Expense">
+    <link rel="apple-touch-icon" href="{% static 'icons/apple-icon-180x180.png' %}">
+    <link rel="manifest" href="/manifest.json">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #021838;
+            --light-bg: #ffffff;
+            --sidebar-bg: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--light-bg);
+            border-bottom: 1px solid #e9ecef;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-blue) !important;
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            color: #6c757d !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            margin: 0 0.5rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary-blue) !important;
+        }
+
+        .sidebar {
+            background-color: var(--sidebar-bg);
+            min-height: 100vh;
+            padding-top: 2rem;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: #6c757d;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            color: var(--primary-blue);
+            background-color: rgba(13, 110, 253, 0.05);
+            border-left-color: var(--primary-blue);
+            padding-left: 1.5rem;
+        }
+
+        .page-title {
+            color: var(--primary-blue);
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            border: 1px solid #e9ecef;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            border-color: var(--primary-blue);
+        }
+
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0b5ed7;
+        }
+
+        .badge-primary {
+            background-color: var(--primary-blue);
+        }
+
+        .table-responsive {
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: var(--sidebar-bg);
+            color: #495057;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(13, 110, 253, 0.05);
+        }
+
+        .amount-cell {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .widget-card {
+            border: none;
+            border-radius: 0.5rem;
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .widget-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin: 0.5rem 0;
+        }
+
+        .widget-label {
+            color: #6c757d;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .widget-icon {
+            font-size: 2rem;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .alert {
+            border: none;
+            border-radius: 0.5rem;
+        }
+
+        .alert-success {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #664d03;
+        }
+
+        .alert-info {
+            background-color: #cfe2ff;
+            color: #084298;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+
+        .btn-group-vertical .btn {
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .pagination .page-link {
+            color: var(--primary-blue);
+        }
+
+        .pagination .page-link:hover {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary-blue);
+            border-color: var(--primary-blue);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-name {
+            color: #495057;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                padding-top: 1rem;
+            }
+
+            .sidebar-nav a {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .widget-value {
+                font-size: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Navbar -->
+    {% if user.is_authenticated %}
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'dashboard' %}">
+                <i class="bi bi-box-seam"></i> Cubixmet Expense
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+                            href="{% url 'dashboard' %}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'fund' in request.resolver_match.url_name %}active{% endif %}"
+                            href="{% url 'fund-list' %}">
+                            <i class="bi bi-wallet2"></i> Funds
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'expense' in request.resolver_match.url_name %}active{% endif %}"
+                            href="{% url 'expense-list' %}">
+                            <i class="bi bi-receipt"></i> Expenses
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'contributor' in request.resolver_match.url_name %}active{% endif %}"
+                            href="{% url 'contributor-list' %}">
+                            <i class="bi bi-people"></i> Contributors
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'category' in request.resolver_match.url_name %}active{% endif %}"
+                            href="{% url 'category-list' %}">
+                            <i class="bi bi-tags"></i> Categories
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'todo' in request.resolver_match.url_name %}active{% endif %}"
+                            href="{% url 'todo-list' %}">
+                            <i class="bi bi-check-square"></i> Todos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'report' in request.resolver_match.url_name %}active{% endif %}"
+                            href="{% url 'report-dashboard' %}">
+                            <i class="bi bi-bar-chart"></i> Reports
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'activity' in request.resolver_match.url_name %}active{% endif %}"
+                            href="{% url 'activity-logs' %}">
+                            <i class="bi bi-clock-history"></i> Activity Logs
+                        </a>
+                    </li>
+                </ul>
+                <div class="user-menu ms-3 ps-3 border-start">
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-link dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none; color: inherit;">
+                            <i class="bi bi-person-circle"></i> {{ user.get_full_name|default:user.username }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'password_change' %}">
+                                <i class="bi bi-lock"></i> Change Password
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form action="{% url 'logout' %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item text-danger" id="logout-btn" data-submit-text="Logout">
+                                        <i class="bi bi-box-arrow-right"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- Install App Button (Hidden by default) -->
+                    <button id="installApp" class="btn btn-sm btn-success d-none ms-2">
+                        <i class="bi bi-download"></i> Install App
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        <div class="container-fluid py-4">
+            <!-- Messages -->
+            {% if messages %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Page Content -->
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light border-top py-4 mt-5">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-muted mb-0">&copy; 2026 Cubixmet Expense. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end text-muted small">
+                    <p>Cubixmet Expense Management System</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'button-loader.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        let deferredPrompt;
+        const installBtn = document.getElementById('installApp');
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                {% if user.is_authenticated %}
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+                {% else %}
+                navigator.serviceWorker.getRegistrations().then(function (registrations) {
+                    for (let registration of registrations) {
+                        registration.unregister();
+                        console.log('ServiceWorker unregistered.');
+                    }
+                });
+                {% endif %}
+            });
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+            // Update UI to notify the user they can add to home screen
+            if (installBtn) {
+                installBtn.classList.remove('d-none');
+            }
+        });
+
+        if (installBtn) {
+            installBtn.addEventListener('click', (e) => {
+                // hide our user interface that shows our A2HS button
+                installBtn.classList.add('d-none');
+                // Show the prompt
+                deferredPrompt.prompt();
+                // Wait for the user to respond to the prompt
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the A2HS prompt');
+                    } else {
+                        console.log('User dismissed the A2HS prompt');
+                    }
+                    deferredPrompt = null;
+                });
+            });
+        }
+
+        window.addEventListener('appinstalled', (event) => {
+            console.log('App was installed');
+            if (installBtn) {
+                installBtn.classList.add('d-none');
+            }
+        });
+    </script>
+</body>
+
+</html>

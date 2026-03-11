@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Edit Contributor{% else %}Add Contributor{% endif %} - Cubixmet Expense{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="page-title">
+            <i class="bi bi-person-plus"></i> {% if form.instance.pk %}Edit Contributor{% else %}Add New Contributor{% endif %}
+        </h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Name Field -->
+                    <div class="mb-4">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">
+                            <i class="bi bi-person"></i> Contributor Name <span class="text-danger">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            class="form-control form-control-lg {% if form.name.errors %}is-invalid{% endif %}"
+                            id="{{ form.name.id_for_label }}"
+                            name="{{ form.name.name }}"
+                            placeholder="e.g., Fadhil, Shahid"
+                            value="{{ form.name.value|default:'' }}"
+                            required
+                        >
+                        {% if form.name.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.name.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-2">Enter the name of the fund contributor</small>
+                    </div>
+
+                    <!-- Description Field -->
+                    <div class="mb-4">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">
+                            <i class="bi bi-chat-left"></i> Description
+                        </label>
+                        <textarea
+                            class="form-control {% if form.description.errors %}is-invalid{% endif %}"
+                            id="{{ form.description.id_for_label }}"
+                            name="{{ form.description.name }}"
+                            rows="4"
+                            placeholder="Add any additional information about this contributor..."
+                        >{{ form.description.value|default:'' }}</textarea>
+                        {% if form.description.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.description.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-2">Optional - Add notes or contact information</small>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-grid gap-2 d-sm-flex justify-content-between mt-5">
+                        <a href="{% url 'contributor-list' %}" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-check-lg"></i> {% if form.instance.pk %}Update Contributor{% else %}Add Contributor{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Panel -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-light border-bottom">
+                <h5 class="mb-0"><i class="bi bi-info-circle" style="color: #021838;"></i> Help</h5>
+            </div>
+            <div class="card-body">
+                <h6>Contributor Guidelines</h6>
+                <ul class="small">
+                    <li>Each contributor must have a unique name</li>
+                    <li>Use full names for clarity</li>
+                    <li>Add descriptions for tracking purposes</li>
+                    <li>All fields marked with * are required</li>
+                </ul>
+                <hr>
+                <h6>Quick Tips</h6>
+                <p class="small text-muted">
+                    Contributors can be edited or deleted at any time. If a contributor has associated funds, you'll need to delete or reassign those funds before removing the contributor.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

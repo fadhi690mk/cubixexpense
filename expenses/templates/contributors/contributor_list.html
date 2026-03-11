@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Contributors - Cubixmet Expense{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1 class="page-title">
+            <i class="bi bi-people"></i> Contributors
+        </h1>
+        <p class="text-muted">Manage all fund contributors</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'contributor-create' %}" class="btn btn-primary btn-lg">
+            <i class="bi bi-plus-lg"></i> Add New Contributor
+        </a>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="text-muted">Active Contributors</h6>
+                <h2 class="text-primary">{{ active_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="text-muted">Deleted Contributors</h6>
+                <h2 class="text-danger">{{ inactive_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="text-muted">Total Funds</h6>
+                <h2 class="text-success">₹{{ total_funds|floatformat:2 }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="text-muted">Avg per Contributor</h6>
+                <h2 class="text-info">₹{{ avg_per_contributor|floatformat:2 }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contributors Table -->
+<div class="card">
+    <div class="card-body p-0">
+        {% if contributors %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 40px;">ID</th>
+                            <th>Name</th>
+                            <th text-align="center">Total Funds</th>
+                            <th text-align="center">Fund Count</th>
+                            <th style="width: 120px;" text-align="center">Status</th>
+                            <th style="width: 200px;" text-align="center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for contributor in contributors %}
+                            <tr>
+                                <td><strong>#{{ contributor.id }}</strong></td>
+                                <td>
+                                    <strong>{{ contributor.name }}</strong>
+                                    {% if contributor.description %}
+                                        <br><small class="text-muted">{{ contributor.description }}</small>
+                                    {% endif %}
+                                </td>
+                                <td text-align="center">
+                                    <span class="badge badge-success">₹{{ contributor.total_funds|floatformat:2 }}</span>
+                                </td>
+                                <td text-align="center">
+                                    <span class="badge badge-info">{{ contributor.fund_count }}</span>
+                                </td>
+                                <td text-align="center">
+                                    {% if contributor.is_active %}
+                                        <span class="badge bg-success"><i class="bi bi-check-circle"></i> Active</span>
+                                    {% else %}
+                                        <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Deleted</span>
+                                    {% endif %}
+                                </td>
+                                <td text-align="center">
+                                    <a href="{% url 'contributor-update' contributor.id %}" class="btn btn-sm btn-outline-primary" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'contributor-delete' contributor.id %}" class="btn btn-sm btn-outline-danger" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info m-4" role="alert">
+                <i class="bi bi-info-circle"></i>
+                <strong>No contributors found!</strong> Start by <a href="{% url 'contributor-create' %}" class="alert-link">creating a new contributor</a>.
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Back Button -->
+<div class="mt-4">
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+
+{% endblock %}

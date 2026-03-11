@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Deleted Records - Cubixmet Expense{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-5">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-0">
+                        <i class="bi bi-trash"></i> Deleted Records (Superadmin Only)
+                    </h2>
+                    <p class="text-muted small mt-2">View and restore soft-deleted records from the system</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert -->
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle"></i>
+        <strong>Superadmin Access Only</strong> - This page shows all soft-deleted records that can be restored.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <h3 class="card-title text-danger">
+                        <i class="bi bi-wallet2"></i>
+                    </h3>
+                    <p class="card-text">Deleted Funds</p>
+                    <h2 class="text-danger">{{ deleted_funds_count }}</h2>
+                    <a href="{% url 'deleted-funds' %}" class="btn btn-sm btn-outline-danger">View</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <h3 class="card-title text-danger">
+                        <i class="bi bi-receipt"></i>
+                    </h3>
+                    <p class="card-text">Deleted Expenses</p>
+                    <h2 class="text-danger">{{ deleted_expenses_count }}</h2>
+                    <a href="{% url 'deleted-expenses' %}" class="btn btn-sm btn-outline-danger">View</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <h3 class="card-title text-danger">
+                        <i class="bi bi-tags"></i>
+                    </h3>
+                    <p class="card-text">Deleted Categories</p>
+                    <h2 class="text-danger">{{ deleted_categories_count }}</h2>
+                    <a href="{% url 'deleted-categories' %}" class="btn btn-sm btn-outline-danger">View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Summary -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-5">
+                    <h3>Total Deleted Records</h3>
+                    <h1 class="text-danger display-4">{{ total_deleted }}</h1>
+                    <p class="text-muted">All soft-deleted records are tracked and can be restored by superadmin</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Box -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-left-info shadow-sm">
+                <div class="card-body">
+                    <h5><i class="bi bi-info-circle"></i> What are Soft Deletes?</h5>
+                    <p class="mb-0">
+                        Soft deletes mark records as inactive (is_active=False) without permanently removing them from the database.
+                        This allows for data recovery, audit trails, and compliance. All deletions are logged in the Activity Logs.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-title {
+        font-size: 2.5rem;
+        margin-bottom: 0;
+    }
+    
+    .border-left-info {
+        border-left: 4px solid #021838;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Edit Category{% else %}Add Category{% endif %} - Cubixmet Expense{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="page-title">
+            <i class="bi bi-tags"></i> {% if form.instance.pk %}Edit Category{% else %}Add New Category{% endif %}
+        </h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card">
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Name Field -->
+                    <div class="mb-4">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">
+                            <i class="bi bi-tag"></i> Category Name <span class="text-danger">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            class="form-control form-control-lg {% if form.name.errors %}is-invalid{% endif %}"
+                            id="{{ form.name.id_for_label }}"
+                            name="{{ form.name.name }}"
+                            placeholder="e.g., Office Supplies"
+                            value="{{ form.name.value|default:'' }}"
+                            required
+                            autofocus
+                        >
+                        {% if form.name.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.name.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-2">Enter a descriptive category name</small>
+                    </div>
+
+                    <!-- Description Field -->
+                    <div class="mb-4">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">
+                            <i class="bi bi-chat-left"></i> Description
+                        </label>
+                        <textarea
+                            class="form-control {% if form.description.errors %}is-invalid{% endif %}"
+                            id="{{ form.description.id_for_label }}"
+                            name="{{ form.description.name }}"
+                            rows="4"
+                            placeholder="Add details about this category..."
+                        >{{ form.description.value|default:'' }}</textarea>
+                        {% if form.description.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.description.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted d-block mt-2">Optional - Describe what this category is for</small>
+                    </div>
+
+                    <!-- Status Info -->
+                    {% if form.instance.pk %}
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <i class="bi bi-info-circle"></i> <strong>Current Status:</strong>
+                        {% if form.instance.is_active %}
+                        <span class="badge bg-success ms-2">Active</span>
+                        <p class="mb-0 mt-2 small">This category is currently in use. You can edit or deactivate it.</p>
+                        {% else %}
+                        <span class="badge bg-secondary ms-2">Inactive</span>
+                        <p class="mb-0 mt-2 small">This category is inactive and hidden from new expenses.</p>
+                        {% endif %}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endif %}
+
+                    <!-- Buttons -->
+                    <div class="d-grid gap-2 d-sm-flex justify-content-between mt-5">
+                        <a href="{% url 'category-list' %}" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg" id="submit-btn" data-submit-text="{% if form.instance.pk %}Update Category{% else %}Add Category{% endif %}">
+                            <i class="bi bi-check-lg"></i> {% if form.instance.pk %}Update Category{% else %}Add Category{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
